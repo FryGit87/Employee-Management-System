@@ -1,0 +1,25 @@
+{
+  "name": "employee-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FryGit87/Employee-Management-System.git"
+  },
+  "author": "Kym Reilly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FryGit87/Employee-Management-System/issues"
+  },
+  "homepage": "https://github.com/FryGit87/Employee-Management-System#readme",
+  "dependencies": {
+    "asciiart-logo": "^0.2.6",
+    "console.table": "^0.10.0",
+    "db": "^3.3.1",
+    "inquirer": "^8.2.4"
+  }
+}
