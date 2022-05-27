@@ -1,7 +1,7 @@
 
-DROP DATABASE IF EXISTS employee_DB; --removes database if exists
-CREATE DATABASE employee_DB; --creates a new databse
-USE employee_DB; --selects the newly created database
+DROP DATABASE IF EXISTS employee_db; --removes database if exists
+CREATE DATABASE employee_db; --creates a new databse
+USE employee_db; --selects the newly created database
 
 
 --Department Table
