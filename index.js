@@ -20,19 +20,47 @@ const db = mysql.createConnection(
 
 // Use inquirer to get user input
 function runPrompt() {
-  inquirer.prompt({
-    name: "choice",
-    type: "list",
-    message: "What would you like to do?",
-    choices: [
-      "View all Employees.",
-      "Add Employee.",
-      "Update Employee Role.",
-      "View All Roles.",
-      "Add Role.",
-      "View All Departments.",
-      "Add Department.",
-      "Exit.",
-    ],
-  });
+  inquirer
+    .prompt({
+      name: "choice",
+      type: "list",
+      message: "What would you like to do?",
+      choices: [
+        "View all Employees.",
+        "Add Employee.",
+        "Update Employee Role.",
+        "View All Roles.",
+        "Add Role.",
+        "View All Departments.",
+        "Add Department.",
+        "Exit.",
+      ],
+    })
+    .then(function (userSelected) {
+      switch (userSelected.choice) {
+        case "View all Employees.":
+          break;
+
+        case "Add Employee.":
+          break;
+
+        case "Update Employee Role.":
+          break;
+
+        case "View All Roles.":
+          break;
+
+        case "Add Role.":
+          break;
+
+        case "View All Departments.":
+          break;
+
+        case "Add Department.":
+          break;
+
+        case "Exit.":
+          break;
+      }
+    });
 }
