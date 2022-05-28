@@ -2,7 +2,9 @@ const express = require("express");
 const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
-const db = require("./db");
+// const db = require("./db");
+const conn = require("./conn");
+
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3306;
@@ -13,9 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
-const connection = require("./connection");
 
-connection.connect(function (err) {
+conn.connect(function (err) {
   if (err) throw err;
   console.log(
     asciiLogo({
@@ -52,31 +53,55 @@ function runPrompt() {
     .then(function (userSelected) {
       switch (userSelected.choice) {
         case "View all Employees.":
+            function allEmployees();
           break;
 
         case "Add Employee.":
+            function addEmployee();
           break;
 
         case "Update Employee Role.":
+            function updateEmpRole();
           break;
 
         case "View All Roles.":
+            function allRoles();
           break;
 
         case "Add Role.":
+            function addRoles();
           break;
 
         case "View All Departments.":
+            function allDepartments();
           break;
 
         case "Add Department.":
+            function addDepartment();
           break;
 
         case "Exit.":
+            function quit();
           break;
       }
     });
 }
+
+function allEmployees() {}
+
+function addEmployee() {}
+
+function updateEmpRole() {}
+
+function allRoles() {}
+
+function addRoles() {}
+
+function allDepartments() {}
+
+function addDepartment() {}
+
+function quit() {}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
