@@ -2,9 +2,9 @@ const express = require("express");
 const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
+const mysql = require("mysql2");
 // const db = require("./db");
 // const conn = require("./conn");
-const mysql = require("mysql2");
 // require("dotenv").config();
 
 const PORT = process.env.PORT || 3002;
@@ -18,13 +18,11 @@ app.use(express.json());
 const db = mysql.createConnection(
   {
     host: "localhost",
-    // MySQL username,
     user: "root",
-    // TODO: Add MySQL password here
-    password: "",
-    database: "employee_db",
+    password: "3cryp+y0uRD2+@$oN!",
+    database: "staff_system_db",
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`Connected to the staff_system_db database.`)
 );
 
 db.connect(function (err) {
@@ -40,12 +38,12 @@ db.connect(function (err) {
       textColor: "green",
     }).render()
   );
-  runPrompt();
+  runInquire();
 });
 
 // Use inquirer to get user input
-function runPrompt() {
-  inquirer
+function runInquire() {
+  inquire
     .prompt({
       name: "choice",
       type: "list",
@@ -64,35 +62,35 @@ function runPrompt() {
     .then(function (userSelected) {
       switch (userSelected.choice) {
         case "View all Employees.":
-          // function allEmployees();
+          // allEmployees();
           break;
 
         case "Add Employee.":
-          // function addEmployee();
+          // addEmployee();
           break;
 
         case "Update Employee Role.":
-          // function updateEmpRole();
+          // updateEmpRole();
           break;
 
         case "View All Roles.":
-          // function allRoles();
+          // allRoles();
           break;
 
         case "Add Role.":
-          // function addRoles();
+          // addRoles();
           break;
 
         case "View All Departments.":
-          // function allDepartments();
+          allDepartments();
           break;
 
         case "Add Department.":
-          // function addDepartment();
+          // addDepartment();
           break;
 
         case "Exit.":
-          // function conn.end();
+          // conn.end();
           break;
       }
     });
@@ -110,28 +108,84 @@ function allEmployees() {
         FROM employee`;
 }
 
-function addEmployee() {}
+function addEmployee() {
+  db.query;
+  inquire
+    .prompt([
+      {
+        type: "input",
+        message: "What is your first name?",
+        name: "first_name",
+      },
+      {
+        type: "input",
+        message: "What is your last name?",
+        name: "last_name",
+      },
+      {
+        name: "role",
+        type: "list",
+        message: "What is their role?",
+        choices: [
+          "Sales Lead.",
+          "Salesperson.",
+          "Lead Engineer.",
+          "Software Engineer.",
+          "Account Manager.",
+          "Accountant.",
+          "Legal Team Lead.",
+          "Lawyer.",
+        ],
+      },
+      {
+        name: "manager",
+        type: "list",
+        message: "Who is their manager?",
+        choices: [
+          "None.",
+          "John Doe.",
+          "Ashley Rodriguez.",
+          "Kunal Singh.",
+          "Sarah Lourd.",
+        ],
+      },
+    ])
+    .then((response) =>
+      response.confirm === response.password
+        ? console.log("Success!")
+        : console.log("You forgot your password already?!")
+    );
+}
 
 function updateEmpRole() {}
 
 function allRoles() {
   const sql = `SELECT 
-        role.id,
-        title, 
-        department.name AS department,
-        salary
-        FROM role`;
+    roles.id,
+    roles.title, 
+    department.dep_name AS Department,
+    roles.salary
+    FROM roles
+    INNER JOIN department ON roles.department_id = department.id`;
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    runInquire();
+  });
 }
 
 function addRoles() {}
 
 function allDepartments() {
   const sql = `SELECT * FROM department`;
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    runInquire();
+  });
 }
 
 function addDepartment() {}
-
-function quit() {}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

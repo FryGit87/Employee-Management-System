@@ -6,13 +6,13 @@ USE staff_system_db;
 
 CREATE TABLE department (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  dep_name VARCHAR(30) NOT NULL
+  dep_name VARCHAR(30) UNIQUE NOT NULL
 );
 
 
-CREATE TABLE role (
+CREATE TABLE roles (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(30),
+    title VARCHAR(30) UNIQUE NOT NULL,
     salary DECIMAL(12),
     department_id INT,
     FOREIGN KEY (department_id) 
@@ -27,5 +27,5 @@ CREATE TABLE employee (
     role_id INT, 
     manager_id INT,
     FOREIGN KEY (role_id) 
-    REFERENCES role(id)
+    REFERENCES roles(id)
 );
