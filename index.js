@@ -1,22 +1,35 @@
+const express = require("express");
 const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
 const db = require("./db");
-const mysql = require("mysql2");
 require("dotenv").config();
-const dotenv = require("dotenv");
+
+const PORT = process.env.PORT || 3306;
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Connect to database
-const db = mysql.createConnection(
-  {
-    host: "localhost",
-    user: "root",
-    // TODO: Add MySQL password here
-    password: "", //password .env?!??!?!
-    database: "employee_db", // Database name
-  },
-  console.log(`Connected to the Database!`)
-);
+const connection = require("./connection");
+
+connection.connect(function (err) {
+  if (err) throw err;
+  console.log(
+    asciiLogo({
+      name: "Employee Manager",
+      lineChars: 10,
+      padding: 3,
+      margin: 4,
+      borderColor: "grey",
+      logoColor: "green",
+      textColor: "green",
+    }).render()
+  );
+  runPrompt();
+});
 
 // Use inquirer to get user input
 function runPrompt() {
@@ -64,3 +77,7 @@ function runPrompt() {
       }
     });
 }
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
