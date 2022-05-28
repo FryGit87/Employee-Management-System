@@ -62,7 +62,7 @@ function runInquire() {
     .then(function (userSelected) {
       switch (userSelected.choice) {
         case "View all Employees.":
-          // allEmployees();
+          allEmployees();
           break;
 
         case "Add Employee.":
@@ -90,22 +90,33 @@ function runInquire() {
           break;
 
         case "Exit.":
-          // conn.end();
+          conn.end();
           break;
       }
     });
 }
 
 function allEmployees() {
-  const sql = `SELECT 
-        employee.role_id, 
-        employee.first_name, 
-        employee.last_name, 
-        title, 
-        name AS department, 
-        salary,
-        CONCAT(employee.first_Name,' ',employee.last_name) AS manager
-        FROM employee`;
+  const sql = `SELECT employee.id,
+    employee.first_name,
+    employee.last_name,
+    title,
+    dep_name AS department,
+    salary,
+    CONCAT(e.first_name," ",e.last_name) AS manager
+    FROM employee
+    LEFT JOIN roles
+    ON employee.role_id = roles.id
+    LEFT JOIN department
+    ON roles.department_id = department.id
+    LEFT JOIN employee e
+    ON employee.manager_id = e.id
+    ORDER BY employee.id;`;
+  db.query(sql, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runInquire();
+  });
 }
 
 function addEmployee() {
@@ -167,9 +178,9 @@ function allRoles() {
     roles.salary
     FROM roles
     INNER JOIN department ON roles.department_id = department.id`;
-  db.query(sql, (err, result) => {
+  db.query(sql, (err, res) => {
     if (err) throw err;
-    console.table(result);
+    console.table(res);
     runInquire();
   });
 }
@@ -178,9 +189,9 @@ function addRoles() {}
 
 function allDepartments() {
   const sql = `SELECT * FROM department`;
-  db.query(sql, (err, result) => {
+  db.query(sql, (err, res) => {
     if (err) throw err;
-    console.table(result);
+    console.table(res);
     runInquire();
   });
 }
