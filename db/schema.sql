@@ -1,29 +1,31 @@
+DROP DATABASE IF EXISTS staff_system_db;
+CREATE DATABASE staff_system_db;
 
-DROP DATABASE IF EXISTS employee_db; --removes database if exists
-CREATE DATABASE employee_db; --creates a new databse
-USE employee_db; --selects the newly created database
+USE staff_system_db;
 
 
---Department Table
 CREATE TABLE department (
-	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR (30) NOT NULL,
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  dep_name VARCHAR(30) NOT NULL
 );
 
---Role Table
+
 CREATE TABLE role (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(30) NOT NULL,
-    salary DEC NOT NULL,
-    department_id INT NOT NULL,
-    FOREIGN KEY (department_id) REFERENCES department(id)
+    title VARCHAR(30),
+    salary DECIMAL(12),
+    department_id INT,
+    FOREIGN KEY (department_id) 
+    REFERENCES department(id)
 );
 
---Employee Table
+
 CREATE TABLE employee (
 	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    role_id INT NOT NULL FOREIGN KEY (role_id) REFERENCES role(id),
-    manager_id INT NULL,
+    first_name VARCHAR(30),
+    last_name VARCHAR(30),
+    role_id INT, 
+    manager_id INT,
+    FOREIGN KEY (role_id) 
+    REFERENCES role(id)
 );

@@ -3,11 +3,11 @@ const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
 // const db = require("./db");
-const conn = require("./conn");
+// const conn = require("./conn");
+const mysql = require("mysql2");
+// require("dotenv").config();
 
-require("dotenv").config();
-
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT || 3002;
 const app = express();
 
 // Express middleware
@@ -15,8 +15,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
+const db = mysql.createConnection(
+  {
+    host: "localhost",
+    // MySQL username,
+    user: "root",
+    // TODO: Add MySQL password here
+    password: "",
+    database: "employee_db",
+  },
+  console.log(`Connected to the movies_db database.`)
+);
 
-conn.connect(function (err) {
+db.connect(function (err) {
   if (err) throw err;
   console.log(
     asciiLogo({
@@ -53,51 +64,70 @@ function runPrompt() {
     .then(function (userSelected) {
       switch (userSelected.choice) {
         case "View all Employees.":
-            function allEmployees();
+          // function allEmployees();
           break;
 
         case "Add Employee.":
-            function addEmployee();
+          // function addEmployee();
           break;
 
         case "Update Employee Role.":
-            function updateEmpRole();
+          // function updateEmpRole();
           break;
 
         case "View All Roles.":
-            function allRoles();
+          // function allRoles();
           break;
 
         case "Add Role.":
-            function addRoles();
+          // function addRoles();
           break;
 
         case "View All Departments.":
-            function allDepartments();
+          // function allDepartments();
           break;
 
         case "Add Department.":
-            function addDepartment();
+          // function addDepartment();
           break;
 
         case "Exit.":
-            function quit();
+          // function conn.end();
           break;
       }
     });
 }
 
-function allEmployees() {}
+function allEmployees() {
+  const sql = `SELECT 
+        employee.role_id, 
+        employee.first_name, 
+        employee.last_name, 
+        title, 
+        name AS department, 
+        salary,
+        CONCAT(employee.first_Name,' ',employee.last_name) AS manager
+        FROM employee`;
+}
 
 function addEmployee() {}
 
 function updateEmpRole() {}
 
-function allRoles() {}
+function allRoles() {
+  const sql = `SELECT 
+        role.id,
+        title, 
+        department.name AS department,
+        salary
+        FROM role`;
+}
 
 function addRoles() {}
 
-function allDepartments() {}
+function allDepartments() {
+  const sql = `SELECT * FROM department`;
+}
 
 function addDepartment() {}
 
