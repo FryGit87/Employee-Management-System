@@ -70,11 +70,11 @@ function runInquire() {
           break;
 
         case "Update Employee Role.":
-          // updateEmpRole();
+          updateEmpRole();
           break;
 
         case "View All Roles.":
-          // allRoles();
+          allRoles();
           break;
 
         case "Add Role.":
@@ -90,7 +90,7 @@ function runInquire() {
           break;
 
         case "Exit.":
-          conn.end();
+          db.end();
           break;
       }
     });
@@ -113,62 +113,71 @@ function allEmployees() {
     ON employee.manager_id = e.id
     ORDER BY employee.id;`;
   db.query(sql, (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runInquire();
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    } else {
+      console.table(res);
+      runInquire();
+    }
   });
 }
 
-function addEmployee() {
-  db.query;
-  inquire
-    .prompt([
-      {
-        type: "input",
-        message: "What is your first name?",
-        name: "first_name",
-      },
-      {
-        type: "input",
-        message: "What is your last name?",
-        name: "last_name",
-      },
-      {
-        name: "role",
-        type: "list",
-        message: "What is their role?",
-        choices: [
-          "Sales Lead.",
-          "Salesperson.",
-          "Lead Engineer.",
-          "Software Engineer.",
-          "Account Manager.",
-          "Accountant.",
-          "Legal Team Lead.",
-          "Lawyer.",
-        ],
-      },
-      {
-        name: "manager",
-        type: "list",
-        message: "Who is their manager?",
-        choices: [
-          "None.",
-          "John Doe.",
-          "Ashley Rodriguez.",
-          "Kunal Singh.",
-          "Sarah Lourd.",
-        ],
-      },
-    ])
-    .then((response) =>
-      response.confirm === response.password
-        ? console.log("Success!")
-        : console.log("You forgot your password already?!")
-    );
-}
+function addEmployee() {}
 
-function updateEmpRole() {}
+function updateEmpRole() {
+  db.query(`SELECT * FROM employee`, (err, employee_res) => {
+    if (err) throw err;
+    db.query(`SELECT * FROM roles`, (err, role_res) => {
+      if (err) throw err;
+      inquire
+        .prompt([
+          {
+            name: "employee",
+            type: "list",
+            message: "Select the employee to update.",
+            choices: () =>
+              employee_res.map(
+                (employee_res) =>
+                  employee_res.first_name + " " + employee_res.last_name
+              ),
+          },
+          {
+            name: "role",
+            type: "list",
+            message: "What is their new role?",
+            choices: () => role_res.map((role_res) => role_res.title),
+          },
+        ])
+        .then((answers) => {
+          const roleID = role_res.filter(
+            (role_res) => role_res.title === answers.role
+          )[0].id;
+          const employID = employee_res.filter(
+            (employee_res) =>
+              employee_res.first_name + " " + employee_res.last_name ===
+              answers.employee
+          )[0].id;
+          db.query(
+            `UPDATE employee SET ? WHERE ?`,
+            [
+              {
+                role_id: roleID,
+              },
+              {
+                id: employID,
+              },
+            ],
+            function (err) {
+              if (err) throw err;
+              console.log(`${answers.employee} role updated.`);
+              runInquire();
+            }
+          );
+        });
+    });
+  });
+}
 
 function allRoles() {
   const sql = `SELECT 
@@ -179,9 +188,13 @@ function allRoles() {
     FROM roles
     INNER JOIN department ON roles.department_id = department.id`;
   db.query(sql, (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runInquire();
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    } else {
+      console.table(res);
+      runInquire();
+    }
   });
 }
 
@@ -190,9 +203,13 @@ function addRoles() {}
 function allDepartments() {
   const sql = `SELECT * FROM department`;
   db.query(sql, (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    runInquire();
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    } else {
+      console.table(res);
+      runInquire();
+    }
   });
 }
 
