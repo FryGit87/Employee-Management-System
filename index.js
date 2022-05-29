@@ -86,7 +86,7 @@ function runInquire() {
           break;
 
         case "Add Department.":
-          // addDepartment();
+          addDepartment();
           break;
 
         case "Exit.":
@@ -213,7 +213,26 @@ function allDepartments() {
   });
 }
 
-function addDepartment() {}
+function addDepartment() {
+  inquire
+    .prompt({
+      name: "newDep",
+      type: "input",
+      message: "Add new department.",
+    })
+    .then(function (answer) {
+      db.query(`INSERT INTO department SET ?`, {
+        dep_name: answer.newDep,
+      });
+      const sql = "SELECT * FROM department";
+      db.query(sql, function (err, res) {
+        if (err) throw err;
+        console.log(`Created ${answer.newDep} Department`);
+        console.table(res);
+        runInquire();
+      });
+    });
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
