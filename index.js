@@ -3,6 +3,7 @@ const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
 const mysql = require("mysql2");
+const res = require("express/lib/response");
 // const db = require("./db");
 // const conn = require("./conn");
 // require("dotenv").config();
@@ -78,7 +79,7 @@ function runInquire() {
           break;
 
         case "Add Role.":
-          // addRoles();
+          addRoles();
           break;
 
         case "View All Departments.":
@@ -123,7 +124,9 @@ function allEmployees() {
   });
 }
 
-function addEmployee() {}
+function addEmployee() {
+  //TO DO
+}
 
 function updateEmpRole() {
   db.query(`SELECT * FROM employee`, (err, employee_res) => {
@@ -149,14 +152,14 @@ function updateEmpRole() {
             choices: () => role_res.map((role_res) => role_res.title),
           },
         ])
-        .then((answers) => {
+        .then((ans) => {
           const roleID = role_res.filter(
-            (role_res) => role_res.title === answers.role
+            (role_res) => role_res.title === ans.role
           )[0].id;
           const employID = employee_res.filter(
             (employee_res) =>
               employee_res.first_name + " " + employee_res.last_name ===
-              answers.employee
+              ans.employee
           )[0].id;
           db.query(
             `UPDATE employee SET ? WHERE ?`,
@@ -170,7 +173,7 @@ function updateEmpRole() {
             ],
             function (err) {
               if (err) throw err;
-              console.log(`${answers.employee} role updated.`);
+              console.log(`${ans.employee} role updated.`);
               runInquire();
             }
           );
@@ -198,7 +201,48 @@ function allRoles() {
   });
 }
 
-function addRoles() {}
+function addRoles() {
+  db.query(`SELECT DISTINCT * FROM department`, (err, res) => {
+    if (err) throw err;
+    inquire
+      .prompt([
+        {
+          name: "role",
+          type: "input",
+          message: "Add a role.",
+        },
+        {
+          name: "salary",
+          type: "input",
+          message: "Salary of the role.",
+        },
+        {
+          name: "department",
+          type: "list",
+          message: "Select a department to add this role to:",
+          choices: () => res.map((res) => res.dep_name),
+        },
+      ])
+      .then(function (ans) {
+        const departmentID = res.filter(
+          (res) => res.dep_name === ans.department
+        )[0].id;
+        db.query(
+          "INSERT INTO roles SET ?",
+          {
+            title: ans.role,
+            salary: ans.salary,
+            department_id: departmentID,
+          },
+          function (err) {
+            if (err) throw err;
+            console.log(`${ans.role} added to ${ans.department}.`);
+            runInquire();
+          }
+        );
+      });
+  });
+}
 
 function allDepartments() {
   const sql = `SELECT * FROM department`;
@@ -220,14 +264,14 @@ function addDepartment() {
       type: "input",
       message: "Add new department.",
     })
-    .then(function (answer) {
+    .then(function (ans) {
       db.query(`INSERT INTO department SET ?`, {
-        dep_name: answer.newDep,
+        dep_name: ans.newDep,
       });
       const sql = "SELECT * FROM department";
       db.query(sql, function (err, res) {
         if (err) throw err;
-        console.log(`Created ${answer.newDep} Department`);
+        console.log(`Created ${ans.newDep} Department`);
         console.table(res);
         runInquire();
       });
