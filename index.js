@@ -67,7 +67,7 @@ function runInquire() {
           break;
 
         case "Add Employee.":
-          // addEmployee();
+          addEmployee();
           break;
 
         case "Update Employee Role.":
@@ -106,11 +106,11 @@ function allEmployees() {
     salary,
     CONCAT(e.first_name," ",e.last_name) AS manager
     FROM employee
-    LEFT JOIN roles
+    INNER JOIN roles
     ON employee.role_id = roles.id
-    LEFT JOIN department
+    INNER JOIN department
     ON roles.department_id = department.id
-    LEFT JOIN employee e
+    INNER JOIN employee e
     ON employee.manager_id = e.id
     ORDER BY employee.id;`;
   db.query(sql, (err, res) => {
@@ -125,7 +125,67 @@ function allEmployees() {
 }
 
 function addEmployee() {
-  //TO DO
+  db.query(`SELECT DISTINCT title,id FROM roles`, (err, role_res) => {
+    if (err) throw err;
+    db.query(
+      `SELECT DISTINCT CONCAT(employee.first_name," ",employee.last_name) AS manager_name,employee.id
+      FROM employee
+      INNER JOIN employee e
+      ON employee.manager_id = e.id
+      WHERE employee.manager_id IS NOT NULL`,
+      (err, manager_res) => {
+        if (err) throw err;
+        inquire
+          .prompt([
+            {
+              name: "first_name",
+              type: "input",
+              message: "New employee's first name?",
+            },
+            {
+              name: "last_name",
+              type: "input",
+              message: "New employee's last name?",
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "New employee's role?",
+              choices: () => role_res.map((role_res) => role_res.title),
+            },
+            {
+              name: "manager",
+              type: "list",
+              message: "Who is the employee's manager?",
+              choices: () =>
+                manager_res.map((manager_res) => manager_res.manager_name),
+            },
+          ])
+          .then(function (ans) {
+            const managerID = manager_res.filter(
+              (manager_res) => manager_res.manager_name === ans.manager
+            )[0].id;
+            const roleID = role_res.filter(
+              (role_res) => role_res.title === ans.role
+            )[0].id;
+            db.query(
+              "INSERT INTO employee SET ?",
+              {
+                first_name: ans.first_name,
+                last_name: ans.last_name,
+                role_id: roleID,
+                manager_id: managerID,
+              },
+              function (err) {
+                if (err) throw err;
+                console.log(`Added ${ans.first_name} ${ans.last_name}.`);
+                runInquire();
+              }
+            );
+          });
+      }
+    );
+  });
 }
 
 function updateEmpRole() {
