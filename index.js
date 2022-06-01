@@ -3,7 +3,7 @@ const inquire = require("inquirer");
 const asciiLogo = require("asciiart-logo");
 const cTable = require("console.table");
 const mysql = require("mysql2");
-const res = require("express/lib/response");
+// const res = require("express/lib/response");
 // const db = require("./db");
 // const conn = require("./conn");
 // require("dotenv").config();
