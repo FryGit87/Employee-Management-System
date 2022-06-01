@@ -28,6 +28,7 @@ const db = mysql.createConnection(
 
 db.connect(function (err) {
   if (err) throw err;
+  //Employee Manager Logo using ascii-art package
   console.log(
     asciiLogo({
       name: "Employee Manager",
@@ -60,6 +61,7 @@ function runInquire() {
         "Exit.",
       ],
     })
+    //Switch statement to execute the function to correlate with user selection
     .then(function (userSelected) {
       switch (userSelected.choice) {
         case "View all Employees.":
@@ -125,9 +127,11 @@ function allEmployees() {
 }
 
 function addEmployee() {
+  //Query Roles table for title and id data
   db.query(`SELECT DISTINCT title,id FROM roles`, (err, role_res) => {
     if (err) throw err;
     db.query(
+      //Query Employee table for employee ID, first name and last name(concatenated) displayed under manager_name
       `SELECT DISTINCT CONCAT(employee.first_name," ",employee.last_name) AS manager_name,employee.id
       FROM employee
       INNER JOIN employee e
@@ -189,8 +193,10 @@ function addEmployee() {
 }
 
 function updateEmpRole() {
+  //Select all data from Employee table
   db.query(`SELECT * FROM employee`, (err, employee_res) => {
     if (err) throw err;
+    //Select all data from Roles table
     db.query(`SELECT * FROM roles`, (err, role_res) => {
       if (err) throw err;
       inquire
@@ -243,6 +249,7 @@ function updateEmpRole() {
 }
 
 function allRoles() {
+  //Select id, title, salary, department_id from Roles, Join dep_name when it matches department_id under title of Department
   const sql = `SELECT 
     roles.id,
     roles.title, 
@@ -262,6 +269,7 @@ function allRoles() {
 }
 
 function addRoles() {
+  //Select distict/different data values from department
   db.query(`SELECT DISTINCT * FROM department`, (err, res) => {
     if (err) throw err;
     inquire
@@ -305,6 +313,7 @@ function addRoles() {
 }
 
 function allDepartments() {
+  //Select all data from department table
   const sql = `SELECT * FROM department`;
   db.query(sql, (err, res) => {
     if (err) {
@@ -325,6 +334,7 @@ function addDepartment() {
       message: "Add new department.",
     })
     .then(function (ans) {
+      //Takes the new data and inserts into department table
       db.query(`INSERT INTO department SET ?`, {
         dep_name: ans.newDep,
       });
