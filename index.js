@@ -156,7 +156,7 @@ function addEmployee() {
             {
               name: "manager",
               type: "list",
-              message: "Who is the employee's manager?",
+              message: "New employee's manager?",
               choices: () =>
                 manager_res.map((manager_res) => manager_res.manager_name),
             },
