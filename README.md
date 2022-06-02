@@ -71,6 +71,8 @@ node index.js
 
 The video below illustrates how to use:
 
+Instructional Video format: [Click here!](https://drive.google.com/file/d/1sisvBeDqHVszaxB_cTV9LPsoOG0QXeTr/view?usp=sharing)
+
 ---
 
 ## Contributors
